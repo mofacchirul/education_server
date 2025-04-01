@@ -4,7 +4,8 @@ const app = express();
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
-const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const { ObjectId } = require('mongodb');
 
 const port = process.env.PORT || 5000;
 
@@ -12,8 +13,8 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     origin: ["http://localhost:5173",
-      'https://educations-fb2da.web.app',
-      'https://educations-fb2da.firebaseapp.com'
+      // 'https://educations-fb2da.web.app',
+      // 'https://educations-fb2da.firebaseapp.com'
 
     ],
     credentials: true,
@@ -37,14 +38,14 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
    
-
-    const course_collections = client.db("education").collection("course");
+    
+    const course_collections = client.db("education").collection("courses");
     const event_collections = client.db("education").collection("event");
     const blog_collections = client.db("education").collection("blog");
     const user_collections = client.db("education").collection("user");
     const apply_collections = client.db("education").collection("apply");
     const announcements_collections = client.db("education").collection("announcements");
-
+    // console.log("Database collection:", course_collections);
     // ✅ JWT Middleware
     const verifyToken = (req, res, next) => {
       const token = req.cookies?.token;
@@ -97,6 +98,10 @@ async function run() {
       next();
     };
 
+
+    await client.connect();
+console.log("✅ Connected to MongoDB");
+
     // course
     app.post("/courses", async (req, res) => {
       const data = req.body;
@@ -108,12 +113,24 @@ async function run() {
       res.send(result);
     });
 
-    app.get("/courses/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await course_collections.findOne(query);
-      res.send(result);
-    });
+  
+    app.get('/courses/:id', async (req, res) => {
+  
+          const id = req.params.id;
+  
+  
+          const query = { _id: new ObjectId(id) };
+
+  
+          const result = await course_collections.findOne(query);
+
+  
+  
+          res.send(result);
+    
+  });
+    
+    
 
     // events
     app.get("/events", async (req, res) => {
