@@ -13,8 +13,8 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     origin: ["http://localhost:5173",
-      // 'https://educations-fb2da.web.app',
-      // 'https://educations-fb2da.firebaseapp.com'
+      'https://educations-fb2da.web.app',
+       'https://educations-fb2da.firebaseapp.com'
 
     ],
     credentials: true,
@@ -65,13 +65,13 @@ async function run() {
     // ✅ JWT Issue Route
     app.post("/jwt", async (req, res) => {
       const user = req.body.user;
-      const token = jwt.sign(user, process.env.JWT_SECRET, { expiresIn: "1d" });
+      const token = jwt.sign(user, process.env.JWT_SECRET,{ expiresIn: "1h" });
 
       res
         .cookie("token", token, {
           httpOnly: true,
           secure: false, // Change to true in production (HTTPS required)
-          sameSite: "strict",
+  sameSite: "none"
         })
         .send({ success: true });
     });
@@ -99,7 +99,7 @@ async function run() {
     };
 
 
-    await client.connect();
+    // await client.connect();
 console.log("✅ Connected to MongoDB");
 
     // course
